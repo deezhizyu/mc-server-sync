@@ -1,0 +1,6 @@
+node_modules
+server
+compiled
+.env
+
+deno.lock

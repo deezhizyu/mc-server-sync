@@ -1,0 +1,13 @@
+*
+
+!world/**
+world/session.lock
+world/level.dat_old
+!mods/**
+!banned-ips.json
+!banned-players.json
+!server.properties
+!ops.json
+!whitelist.json
+
+!*/
