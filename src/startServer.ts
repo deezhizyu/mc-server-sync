@@ -1,4 +1,4 @@
-import { queuePush } from "@src/git.ts";
+import { push } from "@src/git.ts";
 
 export function startServer() {
   console.log("--- Starting server!");
@@ -36,8 +36,16 @@ export function startServer() {
 
   const serverProcess = command.spawn();
 
-  serverProcess.status.then(() => {
-    queuePush();
+  serverProcess.status.then(async () => {
+    let synced = false;
+
+    while (!synced) {
+      synced = await push();
+
+      if (!synced) {
+        console.log("%c- Error while syncing, trying again...", "color: red");
+      }
+    }
 
     console.log(`Server was stopped`);
   });

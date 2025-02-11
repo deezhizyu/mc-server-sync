@@ -1,7 +1,7 @@
 import { downloadFile } from "@src/utils/downloadFile.ts";
 import { watchWorldSaves } from "@src/utils/watchWorldSaves.ts";
 import { signEula } from "@src/utils/signEula.ts";
-import { startServer } from "@src/utils/startServer.ts";
+import { startServer } from "./src/startServer.ts";
 import { isFileExists } from "@src/utils/isFileExists.ts";
 
 import { push } from "@src/git.ts";

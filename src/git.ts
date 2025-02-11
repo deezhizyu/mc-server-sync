@@ -114,12 +114,14 @@ export async function push(retry?: boolean) {
     await git.add(".");
     await git.commit(`Sync world ${getFormattedDate()}`);
     await git.push("origin", "master");
+
+    return true;
   } catch {
-    if (!retry) {
-      return;
+    if (retry) {
+      console.log("%c- Error while syncing, trying again in 5 seconds", "color: red");
+      queuePush(true);
     }
 
-    console.log("%c- Error syncing, tring again in 5 seconds", "color: red");
-    queuePush(true);
+    return false;
   }
 }
