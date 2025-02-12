@@ -1,7 +1,8 @@
 import { push } from "@src/git.ts";
+import logger from "@src/logger.ts";
 
 export function startServer() {
-  console.log("--- Starting server!");
+  logger.info("Starting server!");
 
   const command = new Deno.Command("java", {
     cwd: "server",
@@ -43,10 +44,12 @@ export function startServer() {
       synced = await push();
 
       if (!synced) {
-        console.log("%c- Error while syncing, trying again...", "color: red");
+        logger.error("Error while syncing, trying again...");
       }
     }
 
-    console.log(`Server was stopped`);
+    logger.info("Server was stopped");
+
+    Deno.exit();
   });
 }

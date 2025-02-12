@@ -1,6 +1,9 @@
 import { getFormattedDate } from "@src/utils/getFormattedDate.ts";
+import logger from "@src/logger.ts";
 
 export async function signEula(file: string) {
+  logger.log("Signing EULA...");
+
   const signed = `#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://aka.ms/MinecraftEULA).
 #${getFormattedDate()}
 eula=TRUE`;

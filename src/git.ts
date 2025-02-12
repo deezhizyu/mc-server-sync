@@ -6,24 +6,14 @@ import {
 } from "npm:simple-git";
 
 import { getFormattedDate } from "@src/utils/getFormattedDate.ts";
-import { yesNoPrompt } from "@src/utils/yesNoPrompts.ts";
+import { getRequiredEnv } from "@src/utils/getRequiredEnv.ts";
 import { isFileExists } from "@src/utils/isFileExists.ts";
+import { choicePrompt } from "./utils/choicePrompt.ts";
+import logger from "@src/logger.ts";
 
-const ACCESS_KEY = Deno.env.get("ACCESS_KEY");
+const ACCESS_KEY = getRequiredEnv("ACCESS_KEY");
 
-if (!ACCESS_KEY) {
-  console.log("%c- No ACCESS_KEY specified!", "color: red");
-
-  Deno.exit();
-}
-
-const REPO = Deno.env.get("REPO");
-
-if (!REPO) {
-  console.log("%c- No REPO specified!", "color: red");
-
-  Deno.exit();
-}
+const REPO = getRequiredEnv("REPO");
 
 if (!isFileExists("server")) {
   Deno.mkdirSync("server");
@@ -35,7 +25,8 @@ const options: Partial<SimpleGitOptions> = {
   trimmed: false,
 };
 
-console.log("- Initializing Git");
+logger.log("Initializing Git");
+
 export const git: SimpleGit = simpleGit(options);
 
 let hasRepository = false;
@@ -47,7 +38,8 @@ try {
 }
 
 if (!hasRepository) {
-  console.log("- Initializing repository...");
+  logger.info("Initializing repository...");
+
   await git.init();
   await git.addConfig("user.email", `${Deno.env.get("USERNAME")}@ostapipi.pi`);
   await git.addConfig("user.name", `${Deno.env.get("USERNAME")}`);
@@ -58,37 +50,37 @@ if (!hasRepository) {
 const status = await git.status();
 
 if (status.files.length) {
-  console.log("%cYou have unsynced changes in current server", "color: yellow");
-  console.log("%cOverride current changes?", "color: red; font-weight: bold");
+  logger.info("You have unsynced changes in current server");
+  logger.error("Override current changes?");
 
-  const yes = yesNoPrompt();
+  const yes = choicePrompt();
 
   if (!yes) {
     Deno.exit();
   }
 
-  console.log("- Overriding changes...");
+  logger.info("Overriding changes...");
   await resetChanges();
 }
 
-console.log("- Fetching server...");
+logger.log("Fetching server...");
 
 try {
   await git.pull("origin", "master");
 } catch {
-  console.log("%cError while pulling", "color: yellow");
-  console.log("%cTry to remove all changes?", "color: red; font-weight: bold");
+  logger.error("Error while pulling");
+  logger.info("Try to remove all changes?");
 
-  const yes = yesNoPrompt();
+  const yes = choicePrompt();
 
   if (!yes) {
     Deno.exit();
   }
 
-  console.log("- Removing changes...");
+  logger.info("Removing changes...");
   await resetChanges();
 
-  console.log("- Fetching again...");
+  logger.info("Fetching again...");
   await git.pull("origin", "master");
 }
 
@@ -108,7 +100,7 @@ export function queuePush(retry?: boolean) {
 }
 
 export async function push(retry?: boolean) {
-  console.log("\n- Syncing server...");
+  console.log("\nSyncing server...");
 
   try {
     await git.add(".");
@@ -118,7 +110,8 @@ export async function push(retry?: boolean) {
     return true;
   } catch {
     if (retry) {
-      console.log("%c- Error while syncing, trying again in 5 seconds", "color: red");
+      logger.error("Error while syncing, trying again in 5 seconds");
+
       queuePush(true);
     }
 

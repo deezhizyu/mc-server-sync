@@ -1,59 +1,25 @@
-import { downloadFile } from "@src/utils/downloadFile.ts";
-import { watchWorldSaves } from "@src/utils/watchWorldSaves.ts";
-import { signEula } from "@src/utils/signEula.ts";
-import { startServer } from "./src/startServer.ts";
+import { signEula } from "./src/serverTools/signEula.ts";
+import { downloadFabric } from "./src/serverTools/downloadFabric.ts";
+import { watchWorldSaves } from "./src/serverTools/watchWorldSaves.ts";
 import { isFileExists } from "@src/utils/isFileExists.ts";
 
-import { push } from "@src/git.ts";
-
-const FABRIC_JAR_URL = Deno.env.get("FABRIC_JAR_URL");
-
-if (!FABRIC_JAR_URL) {
-  console.log("%c- No FABRIC_JAR_URL specified!", "color: red");
-
-  Deno.exit();
-}
-
-if (!isFileExists("server/fabric.jar")) {
-  console.log("- Downloading fabric.jar...");
-
-  await downloadFile("server/fabric.jar", FABRIC_JAR_URL);
-}
-
-if (!isFileExists("server/eula.txt")) {
-  console.log("- Signing EULA...");
-
-  await signEula("server/eula.txt");
-}
+import { startServer } from "@src/startServer.ts";
+import { initializeHandlers } from "@src/utils/exitHandlers.ts";
 
 if (!isFileExists("server/.gitignore")) {
   Deno.copyFileSync("server.gitignore", "server/.gitignore");
 }
 
-// Start server
-startServer();
-
-// Watch world saves to sync
-watchWorldSaves();
-
-// Cleanup handler
-let stopping = false;
-
-function exitHandler() {
-  if (stopping) {
-    return;
-  }
-
-  stopping = true;
-
-  setTimeout(async () => {
-    await push();
-
-    Deno.exit();
-  }, 1500);
+if (!isFileExists("server/fabric.jar")) {
+  await downloadFabric("server/server.jar");
 }
 
-globalThis.addEventListener("unload", exitHandler);
+if (!isFileExists("server/eula.txt")) {
+  await signEula("server/eula.txt");
+}
 
-Deno.addSignalListener("SIGINT", exitHandler);
-Deno.addSignalListener("SIGBREAK", exitHandler);
+startServer();
+
+watchWorldSaves();
+
+initializeHandlers();
