@@ -30,7 +30,7 @@ export function startServer() {
       "-XX:G1HeapRegionSize=8M",
       "-XX:G1ReservePercent=20",
       "-jar",
-      "fabric.jar",
+      "server.jar",
       "--nogui",
     ],
   });

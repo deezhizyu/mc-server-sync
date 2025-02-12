@@ -3,8 +3,8 @@ import { getRequiredEnv } from "@src/utils/getRequiredEnv.ts";
 
 const SERVER_JAR_URL = getRequiredEnv("SERVER_JAR_URL");
 
-export async function downloadFabric(filename: string) {
-  logger.log("Downloading fabric.jar...");
+export async function downloadServer(filename: string) {
+  logger.log("Downloading server.jar...");
 
   const file = await Deno.open(filename, {
     create: true,

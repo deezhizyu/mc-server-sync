@@ -10,6 +10,8 @@ export async function watchWorldSaves() {
 
     if (!levelExists) {
       logger.info("Waiting for level.dat...");
+
+      await new Promise((r) => setTimeout(r, 5000));
     }
   }
 
