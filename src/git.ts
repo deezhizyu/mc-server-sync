@@ -1,14 +1,14 @@
 import {
-  simpleGit,
-  SimpleGit,
-  SimpleGitOptions,
   ResetMode,
+  SimpleGit,
+  simpleGit,
+  SimpleGitOptions,
 } from "npm:simple-git";
 
 import { getFormattedDate } from "@src/utils/getFormattedDate.ts";
 import { getRequiredEnv } from "@src/utils/getRequiredEnv.ts";
 import { isFileExists } from "@src/utils/isFileExists.ts";
-import { choicePrompt } from "./utils/choicePrompt.ts";
+import { choicePrompt } from "@src/utils/choicePrompt.ts";
 import logger from "@src/logger.ts";
 
 const ACCESS_KEY = getRequiredEnv("ACCESS_KEY");
@@ -40,7 +40,7 @@ try {
   hasRepository = false;
 }
 
-if (!hasRepository) {
+if (!hasRepository || !isFileExists("server/.git")) {
   logger.info("Initializing repository...");
 
   await git.init();
@@ -51,19 +51,35 @@ if (!hasRepository) {
 }
 
 const status = await git.status();
+console.log(status.files);
 
 if (status.files.length) {
   logger.info("You have unsynced changes in current server");
-  logger.error("Override current changes?");
+  logger.error("Delete changes?");
 
-  const yes = choicePrompt();
+  const shouldDelete = choicePrompt();
 
-  if (!yes) {
-    Deno.exit();
+  if (shouldDelete) {
+    logger.info("Reverting changes...");
+    await resetChanges();
+  } else {
+    logger.error("This overwrite changes in the repository");
+    logger.info("Continue anyway?");
+
+    const continueAnyway = choicePrompt();
+
+    if (!continueAnyway) {
+      Deno.exit();
+    }
+
+    const result = await push({ force: true });
+
+    if (!result) {
+      logger.error("Error while pushing changes, exiting...");
+
+      Deno.exit();
+    }
   }
-
-  logger.info("Overriding changes...");
-  await resetChanges();
 }
 
 logger.log("Fetching server...");
@@ -98,21 +114,23 @@ export function queuePush(retry?: boolean) {
   clearTimeout(currentTimeout);
 
   currentTimeout = setTimeout(() => {
-    push(retry);
+    push({ retry });
   }, 5000);
 }
 
-export async function push(retry?: boolean) {
+export async function push(options?: { retry?: boolean; force?: boolean }) {
   console.log("\nSyncing server...");
 
   try {
     await git.add(".");
-    await git.commit(`Sync world ${getFormattedDate()}`);
-    await git.push("origin", "master");
+    await git.commit(
+      `${options?.force ? "Override" : "Sync"} world ${getFormattedDate()}`,
+    );
+    await git.push("origin", "master", options?.force ? ["-f"] : []);
 
     return true;
   } catch {
-    if (retry) {
+    if (options?.retry) {
       logger.error("Error while syncing, trying again in 5 seconds");
 
       queuePush(true);
