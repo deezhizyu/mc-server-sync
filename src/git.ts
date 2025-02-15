@@ -51,7 +51,6 @@ if (!hasRepository || !isFileExists("server/.git")) {
 }
 
 const status = await git.status();
-console.log(status.files);
 
 if (status.files.length) {
   logger.info("You have unsynced changes in current server");
@@ -119,7 +118,7 @@ export function queuePush(retry?: boolean) {
 }
 
 export async function push(options?: { retry?: boolean; force?: boolean }) {
-  console.log("\nSyncing server...");
+  logger.info("\nSyncing server...");
 
   try {
     await git.add(".");

@@ -20,5 +20,5 @@ export function initializeHandlers() {
   globalThis.addEventListener("unload", exitHandler);
 
   Deno.addSignalListener("SIGINT", exitHandler);
-  Deno.addSignalListener("SIGBREAK", exitHandler);
+  Deno.addSignalListener("SIGTERM", exitHandler);
 }
