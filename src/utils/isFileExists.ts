@@ -1,4 +1,4 @@
-export function isFileExists(path: string) {
+function isFileExists(path: string) {
   try {
     Deno.lstatSync(path);
 
@@ -11,3 +11,5 @@ export function isFileExists(path: string) {
     return false;
   }
 }
+
+export default isFileExists;

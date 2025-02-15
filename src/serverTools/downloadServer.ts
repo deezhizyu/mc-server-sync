@@ -1,9 +1,9 @@
 import logger from "@src/logger.ts";
-import { getRequiredEnv } from "@src/utils/getRequiredEnv.ts";
+import getRequiredEnv from "@src/utils/getRequiredEnv.ts";
 
 const SERVER_JAR_URL = getRequiredEnv("SERVER_JAR_URL");
 
-export async function downloadServer(filename: string) {
+async function downloadServer(filename: string) {
   logger.log("Downloading server.jar...");
 
   const file = await Deno.open(filename, {
@@ -19,3 +19,5 @@ export async function downloadServer(filename: string) {
 
   await request.body?.pipeTo(file.writable);
 }
+
+export default downloadServer;

@@ -1,6 +1,6 @@
-import { push } from "@src/git.ts";
+import push from "@src/git/push.ts";
 
-export function initializeHandlers() {
+function initializeHandlers() {
   let stopping = false;
 
   function exitHandler() {
@@ -22,3 +22,5 @@ export function initializeHandlers() {
   Deno.addSignalListener("SIGINT", exitHandler);
   Deno.addSignalListener("SIGTERM", exitHandler);
 }
+
+export default initializeHandlers;

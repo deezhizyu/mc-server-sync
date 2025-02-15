@@ -1,6 +1,6 @@
 import logger from "@src/logger.ts";
 
-export function getRequiredEnv(key: string): string {
+function getRequiredEnv(key: string): string {
   const value = Deno.env.get(key);
 
   if (!value) {
@@ -11,3 +11,5 @@ export function getRequiredEnv(key: string): string {
 
   return value;
 }
+
+export default getRequiredEnv;

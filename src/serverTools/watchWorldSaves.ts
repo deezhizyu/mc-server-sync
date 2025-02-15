@@ -1,8 +1,9 @@
-import { isFileExists } from "@src/utils/isFileExists.ts";
-import { queuePush } from "@src/git.ts";
+import isFileExists from "@src/utils/isFileExists.ts";
+import sleep from "@src/utils/sleep.ts";
 import logger from "@src/logger.ts";
+import queuePush from "@src/git/queuePush.ts";
 
-export async function watchWorldSaves() {
+async function watchWorldSaves() {
   let levelExists = false;
 
   while (!levelExists) {
@@ -11,7 +12,7 @@ export async function watchWorldSaves() {
     if (!levelExists) {
       logger.info("Waiting for level.dat...");
 
-      await new Promise((r) => setTimeout(r, 5000));
+      await sleep(5000);
     }
   }
 
@@ -21,3 +22,5 @@ export async function watchWorldSaves() {
     queuePush(true);
   }
 }
+
+export default watchWorldSaves;

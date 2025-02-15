@@ -1,7 +1,7 @@
-import { push } from "@src/git.ts";
 import logger from "@src/logger.ts";
+import push from "@src/git/push.ts";
 
-export function startServer() {
+function startServer() {
   logger.info("Starting server!");
 
   const command = new Deno.Command("java", {
@@ -53,3 +53,5 @@ export function startServer() {
     Deno.exit();
   });
 }
+
+export default startServer;
