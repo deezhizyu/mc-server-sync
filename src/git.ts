@@ -21,9 +21,12 @@ if (!isFileExists("server")) {
 
 const options: Partial<SimpleGitOptions> = {
   baseDir: "server",
-  binary: "../portable_git/cmd/git.exe",
   trimmed: false,
 };
+
+if (Deno.build.os === "windows") {
+  options.binary = "../portable_git/cmd/git.exe";
+}
 
 logger.log("Initializing Git");
 
