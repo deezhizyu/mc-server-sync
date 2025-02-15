@@ -17,7 +17,7 @@ const serverJarPath = `${config.serverPath}/server.jar`;
 const eulaPath = `${config.serverPath}/eula.txt`;
 
 if (!isFileExists(gitignorePath)) {
-  Deno.copyFileSync("server.gitignore", gitignorePath);
+  Deno.copyFileSync(`${import.meta.dirname}/server.gitignore`, gitignorePath);
 }
 
 if (isFileExists(replaceWorldPath)) {
