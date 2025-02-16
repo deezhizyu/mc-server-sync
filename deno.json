@@ -7,6 +7,7 @@
     "@src/": "./src/",
     "@std/fs": "jsr:@std/fs@^1.0.11",
     "@std/http": "jsr:@std/http@^1.0.13",
+    "@std/path": "jsr:@std/path@^1.0.8",
     "moment-timezone": "npm:moment-timezone@^0.5.47",
     "simple-git": "npm:simple-git@^3.27.0"
   }
