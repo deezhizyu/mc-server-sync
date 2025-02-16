@@ -31,17 +31,24 @@ A tool to synchronize your Minecraft server with a remote Git repository.
    deno install
    ```
 
-3. Setup .env file:
+3. Create a new repository with README.md file
+
+4. Create a fine-grained personal access token with access to only that repository, enable Contents read-write permission
+https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token
+
+5. Setup .env file:
    ```sh
-   ACCESS_KEY=your_access_key
+   ACCESS_KEY=your_access_token
    REPO=your_repo_url
    SERVER_JAR_URL=your_server_jar_url
    ```
-4. Compile:
+
+6. Compile:
    ```sh
    sh compile.sh or sh compile-windows.sh
    ```
-5. Run compiled binary in `compiled` folder
+
+7. Run compiled binary in `compiled` folder
 
 ## Acknowledgements
 
