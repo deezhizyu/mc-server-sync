@@ -22,9 +22,9 @@ function initializeHandlers() {
   Deno.addSignalListener("SIGINT", exitHandler);
 
   if (Deno.build.os === "windows") {
-    Deno.addSignalListener("SIGTERM", exitHandler);
-  } else {
     Deno.addSignalListener("SIGBREAK", exitHandler);
+  } else {
+    Deno.addSignalListener("SIGTERM", exitHandler);
   }
 }
 
