@@ -46,7 +46,22 @@ if (!isFileExists(serverJarPath)) {
 }
 
 if (!isFileExists(eulaPath)) {
+  logger.info(
+    "Signing EULA (https://aka.ms/MinecraftEULA) is required to continue and run the server.",
+  );
+  logger.info(
+    "Are you agree with the Minecraft EULA?",
+  );
+
+  const choice = choicePrompt();
+
+  if (!choice) {
+    logger.error("User did not agree to the EULA. Exiting...");
+    Deno.exit();
+  }
+
   await signEula(eulaPath);
+  logger.info("EULA signed successfully.");
 }
 
 await initializeGit();
