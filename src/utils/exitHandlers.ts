@@ -20,7 +20,12 @@ function initializeHandlers() {
   globalThis.addEventListener("unload", exitHandler);
 
   Deno.addSignalListener("SIGINT", exitHandler);
-  Deno.addSignalListener("SIGTERM", exitHandler);
+
+  if (Deno.build.os === "windows") {
+    Deno.addSignalListener("SIGTERM", exitHandler);
+  } else {
+    Deno.addSignalListener("SIGBREAK", exitHandler);
+  }
 }
 
 export default initializeHandlers;

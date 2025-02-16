@@ -14,7 +14,7 @@ const options: Partial<SimpleGitOptions> = {
 };
 
 if (Deno.build.os === "windows") {
-  options.binary = config.windowsPortableGitPath;
+  options.binary = "../portable_git/cmd/git.exe";
 }
 
 logger.log("Initializing Git");

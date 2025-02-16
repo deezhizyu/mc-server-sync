@@ -8,4 +8,4 @@ else
   target="x86_64-unknown-linux-gnu"
 fi
 
-deno compile --target $target --include server.gitignore --include portable_git --output compiled/mc-server-sync --env-file=.env -A main.ts
+deno compile --target $target --output compiled/mc-server-sync --env-file=.env -A main.ts
